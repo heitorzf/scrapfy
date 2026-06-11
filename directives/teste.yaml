@@ -1,0 +1,6 @@
+target: 'https://example.com/'
+
+selectors:
+  - 'h1'
+  - 'p'
+  - 'a'
