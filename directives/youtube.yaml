@@ -1,0 +1,7 @@
+target: 'https://www.youtube.com/'
+
+selectors:
+  - 'h1'
+  - 'p'
+  - 'a'
+  - 'video'

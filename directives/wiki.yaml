@@ -1,0 +1,6 @@
+target: 'https://www.wikipedia.org/'
+
+selectors:
+  - 'h1'
+  - 'p'
+  - 'a'
