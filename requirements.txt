@@ -1,3 +1,5 @@
 requests
-yaml
+PyYAML
+beautifulsoup4
 openai
+flask
