@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta do Projeto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: #ffffff;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        main {
+            width: 90%;
+            max-width: 650px;
+            padding: 32px;
+            border-radius: 24px;
+            background: #0f6fff;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+            font-family: 'Space Grotesk', Arial, sans-serif;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .prompt {
+            display: flex;
+            gap: 10px;
+            margin: 24px 0;
+        }
+
+        .target {
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ffffff;
+            border-radius: 14px;
+            background: #0b55c7;
+            color: #ffffff;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #dceaff;
+        }
+
+        button {
+            padding: 14px 18px;
+            border: 0;
+            border-radius: 14px;
+            background: #ffffff;
+            color: #0f6fff;
+            cursor: pointer;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .resposta {
+            min-height: 90px;
+            padding: 18px;
+            border-radius: 18px;
+            background: #0b55c7;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Consulta do Projeto</h1>
+
+        <p>Digite uma pergunta sobre os dados coletados:</p>
+
+        <div class="target">
+            <label for="target">Target</label>
+            <select id="target">
+                <option value="teste.yaml">teste.yaml</option>
+            </select>
+        </div>
+
+        <div class="prompt">
+            <input type="text" id="pergunta" placeholder="Escreva sua pergunta">
+            <button onclick="buscarResposta()">Gerar</button>
+        </div>
+
+        <h2>Resultado</h2>
+        <p id="resultado" class="resposta">O resultado aparecerá aqui.</p>
+    </main>
+
+    <script>
+        async function carregarTargets() {
+            const target = document.getElementById('target');
+            const resposta = await fetch('/targets');
+            const dados = await resposta.json();
+
+            target.innerHTML = '';
+
+            dados.targets.forEach(function(arquivo) {
+                const option = document.createElement('option');
+                option.value = arquivo;
+                option.textContent = arquivo;
+                target.appendChild(option);
+            });
+        }
+
+        async function buscarResposta() {
+            const pergunta = document.getElementById('pergunta').value;
+            const target = document.getElementById('target').value;
+            const resultado = document.getElementById('resultado');
+
+            if (pergunta === '') {
+                resultado.textContent = 'Digite uma pergunta primeiro.';
+                return;
+            }
+
+            resultado.textContent = 'Gerando resultado...';
+
+            const resposta = await fetch('/get_ai_response?pergunta=' + encodeURIComponent(pergunta) + '&target=' + encodeURIComponent(target));
+            const dados = await resposta.json();
+
+            if (dados.erro) {
+                resultado.textContent = dados.erro;
+            } else {
+                resultado.textContent = dados.resposta;
+            }
+        }
+
+        carregarTargets();
+    </script>
+</body>
+</html>
